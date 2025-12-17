@@ -4,57 +4,41 @@ Command: npx gltfjsx@6.2.3 public/models/character.glb -o src/components/Charact
 */
 
 import { useAnimations, useGLTF } from "@react-three/drei";
+import { useControls } from "leva";
 import React, { useEffect, useRef } from "react";
 
 export function Character({ animation, ...props }) {
   const group = useRef();
-  const { nodes, materials, animations } = useGLTF("/models/character.glb");
-  const { actions } = useAnimations(animations, group);
-  useEffect(() => {
-    actions[animation]?.reset().fadeIn(0.24).play();
-    return () => actions?.[animation]?.fadeOut(0.24);
-  }, [animation]);
+  const model = useGLTF("/models/AdventurerAnimatedExport.glb");
+  const animationFromHook = useAnimations(model.animations, group);
+
+  const { animationName } = useControls({animationName: {options: animationFromHook.names}})
+  
+  // useEffect(() => {
+  //   animationFromHook.actions[model.animation]?.reset().fadeIn(0.24).play();
+  //   return () => animationFromHook.actions?.[model.animation]?.fadeOut(0.24);
+  // }, [model.animation, animationFromHook.actions]);
+
+      useEffect(() =>
+    {
+        const action = animationFromHook.actions[animationName]
+        action
+            .reset()
+            .fadeIn(0.5)
+            .play()
+
+        return () =>
+        {
+            action.fadeOut(0.5)
+        }
+    }, [ animationName ])
+
+  
   return (
     <group ref={group} {...props} dispose={null}>
-      <group name="Scene">
-        <group name="fall_guys">
-          <primitive object={nodes._rootJoint} />
-          <skinnedMesh
-            name="body"
-            geometry={nodes.body.geometry}
-            material={materials.Material}
-            skeleton={nodes.body.skeleton}
-            castShadow
-            receiveShadow
-          />
-          <skinnedMesh
-            name="eye"
-            geometry={nodes.eye.geometry}
-            material={materials.Material}
-            skeleton={nodes.eye.skeleton}
-            castShadow
-            receiveShadow
-          />
-          <skinnedMesh
-            name="hand-"
-            geometry={nodes["hand-"].geometry}
-            material={materials.Material}
-            skeleton={nodes["hand-"].skeleton}
-            castShadow
-            receiveShadow
-          />
-          <skinnedMesh
-            name="leg"
-            geometry={nodes.leg.geometry}
-            material={materials.Material}
-            skeleton={nodes.leg.skeleton}
-            castShadow
-            receiveShadow
-          />
-        </group>
-      </group>
+      <primitive scale={.8} object={model.scene} />
     </group>
   );
 }
 
-useGLTF.preload("/models/character.glb");
+useGLTF.preload("/models/AdventurerAnimatedExport.glb");
