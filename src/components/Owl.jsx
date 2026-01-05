@@ -1,10 +1,11 @@
 import { useAnimations, useGLTF } from "@react-three/drei";
+import { RigidBody } from "@react-three/rapier";
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-export function Character({ animation, ...props }) {
+export function Owl({ animation, ...props }) {
   const group = useRef();
-  const model = useGLTF("/models/AdventurerAnimatedExport2.glb");
+  const model = useGLTF("/models/Owl.glb");
   const modelAnimations = useAnimations(model.animations, group);
 
   //Set material to the player
@@ -16,7 +17,6 @@ export function Character({ animation, ...props }) {
       }
     });
   }, [model.scene]);
-
   // Play animation based on parameter that the component got
   useEffect(() => {
     const action = modelAnimations.actions[animation];
@@ -34,9 +34,11 @@ export function Character({ animation, ...props }) {
   
   return (
     <group ref={group} {...props} dispose={null}>
-      <primitive scale={0.18} object={model.scene} />
+      <RigidBody type="kinematicPosition" colliders="hull">
+        <primitive scale={0.1} object={model.scene} />
+      </RigidBody>
     </group>
   );
 }
 
-useGLTF.preload("/models/AdventurerAnimatedExport2.glb");
+useGLTF.preload("/models/Owl.glb");

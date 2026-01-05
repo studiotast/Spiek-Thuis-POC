@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { MathUtils, Vector3 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { Character } from "./Character";
+import { use } from "react";
 
 const normalizeAngle = (angle) => {
   while (angle > Math.PI) angle -= 2 * Math.PI;
@@ -35,13 +36,15 @@ export const CharacterController = () => {
       WALK_SPEED: { value: 0.7, min: 0.1, max: 4, step: 0.1 },
       RUN_SPEED: { value: 1.3, min: 0.2, max: 12, step: 0.1 },
       ROTATION_SPEED: {
-        value: degToRad(0.5),
+        value: degToRad(3),
         min: degToRad(0.1),
         max: degToRad(5),
         step: degToRad(0.1),
       },
     }
   );
+
+
   const rb = useRef();
   const container = useRef();
   const character = useRef();
@@ -57,6 +60,14 @@ export const CharacterController = () => {
   const cameraLookAt = useRef(new Vector3());
   const [, get] = useKeyboardControls();
   const isClicking = useRef(false);
+
+  const interactionCooldownRef = useRef(false);
+  const isInteracting = useRef(false);
+  const interactionTimeoutRef = useRef(1000);
+
+  const {mousecontrols} = useControls("Mouse Controls", {
+    mousecontrols: true
+  });
 
   useEffect(() => {
     const onMouseDown = (e) => {
@@ -78,6 +89,22 @@ export const CharacterController = () => {
     };
   }, []);
 
+  useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "e" || e.key === "E"){
+        if (interactionCooldownRef.current) return;
+        isInteracting.current = true;
+        console.log("interact event received");
+        setAnimation("Wave");
+        interactionCooldownRef.current = true;
+        setTimeout(() => {
+          interactionCooldownRef.current = false;
+          isInteracting.current = false;
+        }, interactionTimeoutRef.current);
+      }
+    });
+  }, []);
+
   useFrame(({ camera, mouse }) => {
     if (rb.current) {
       const vel = rb.current.linvel();
@@ -97,6 +124,7 @@ export const CharacterController = () => {
       let speed = get().run ? RUN_SPEED : WALK_SPEED;
 
       if (isClicking.current) {
+        if (!mousecontrols) return;
         console.log("clicking", mouse.x, mouse.y);
         if (Math.abs(mouse.x) > 0.1) {
           movement.x = -mouse.x;
@@ -127,11 +155,14 @@ export const CharacterController = () => {
           Math.cos(rotationTarget.current + characterRotationTarget.current) *
           speed;
         if (speed === RUN_SPEED) {
+          if (!isInteracting.current)
           setAnimation("Run");
         } else {
+          if (!isInteracting.current)
           setAnimation("Walk");
         }
       } else {
+        if (!isInteracting.current)
         setAnimation("Idle");
       }
 
@@ -166,8 +197,8 @@ export const CharacterController = () => {
   return (
     <RigidBody colliders={false} lockRotations ref={rb}>
       <group ref={container}>
-        <group ref={cameraTarget} position-z={1.5} />
-        <group ref={cameraPosition} position-y={4} position-z={-4} />
+        <group ref={cameraTarget} position-z={1} />
+        <group ref={cameraPosition} position-y={2} position-z={-3} />
         <group ref={character}>
           <Character scale={0.65} position-y={-0.25} animation={animation ? animation : "Idle"} />
         </group>

@@ -4,6 +4,7 @@ import { useControls } from "leva";
 import { useRef } from "react";
 import { CharacterController } from "./CharacterController";
 import { Map } from "./Map";
+import { Owl } from "./Owl";
 
 const maps = {
   castle_on_hills: {
@@ -41,6 +42,13 @@ export const Experience = () => {
     },
   });
 
+    const { owlPos } = useControls("Owl", {
+    owlPos: {
+      value: [-0.23, -1.61, -2.66],
+      step: 0.01,
+    },
+  });
+
   return (
     <>
       {/* <OrbitControls /> */}
@@ -69,6 +77,7 @@ export const Experience = () => {
           model={`models/${map}.glb`}
         />
         <CharacterController />
+        <Owl position={owlPos} rotation={[0, Math.PI * 1.45, 0]} animation={"Idle"} />
       </Physics>
     </>
   );
