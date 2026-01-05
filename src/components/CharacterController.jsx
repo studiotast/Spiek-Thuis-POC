@@ -32,8 +32,8 @@ export const CharacterController = () => {
   const { WALK_SPEED, RUN_SPEED, ROTATION_SPEED } = useControls(
     "Character Control",
     {
-      WALK_SPEED: { value: 0.8, min: 0.1, max: 4, step: 0.1 },
-      RUN_SPEED: { value: 1.6, min: 0.2, max: 12, step: 0.1 },
+      WALK_SPEED: { value: 0.7, min: 0.1, max: 4, step: 0.1 },
+      RUN_SPEED: { value: 1.3, min: 0.2, max: 12, step: 0.1 },
       ROTATION_SPEED: {
         value: degToRad(0.5),
         min: degToRad(0.1),
@@ -127,13 +127,15 @@ export const CharacterController = () => {
           Math.cos(rotationTarget.current + characterRotationTarget.current) *
           speed;
         if (speed === RUN_SPEED) {
-          setAnimation("run");
+          setAnimation("Run");
         } else {
-          setAnimation("walk");
+          setAnimation("Walk");
         }
       } else {
-        setAnimation("idle");
+        setAnimation("Idle");
       }
+
+      console.log("animation", animation);
       character.current.rotation.y = lerpAngle(
         character.current.rotation.y,
         characterRotationTarget.current,
@@ -167,7 +169,7 @@ export const CharacterController = () => {
         <group ref={cameraTarget} position-z={1.5} />
         <group ref={cameraPosition} position-y={4} position-z={-4} />
         <group ref={character}>
-          <Character scale={0.18} position-y={-0.25} animation={animation} />
+          <Character scale={0.65} position-y={-0.25} animation={animation ? animation : "Idle"} />
         </group>
       </group>
       <CapsuleCollider args={[0.08, 0.15]} />

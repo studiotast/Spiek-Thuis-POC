@@ -1,6 +1,7 @@
 import { KeyboardControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Experience } from "./components/Experience";
+import { Perf } from 'r3f-perf'
 
 const keyboardMap = [
   { name: "forward", keys: ["ArrowUp", "KeyW"] },
@@ -22,6 +23,7 @@ function App() {
       >
         <color attach="background" args={["#ececec"]} />
         <Experience />
+        <Perf position="top-left"/>
       </Canvas>
     </KeyboardControls>
   );

@@ -4,41 +4,55 @@ Command: npx gltfjsx@6.2.3 public/models/character.glb -o src/components/Charact
 */
 
 import { useAnimations, useGLTF } from "@react-three/drei";
-import { useControls } from "leva";
 import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+
+function loadTexture(){
+  const texLoader = new THREE.TextureLoader();
+  return texLoader.load("texture/SpiekAdventurerTextureNew_BaseColor.png");
+}
 
 export function Character({ animation, ...props }) {
   const group = useRef();
-  const model = useGLTF("/models/AdventurerAnimatedExport.glb");
-  const animationFromHook = useAnimations(model.animations, group);
+  const model = useGLTF("/models/AdventurerAnimatedExport2.glb");
+  const modelAnimations = useAnimations(model.animations, group);
 
-  const { animationName } = useControls({animationName: {options: animationFromHook.names}})
-  
-  // useEffect(() => {
-  //   animationFromHook.actions[model.animation]?.reset().fadeIn(0.24).play();
-  //   return () => animationFromHook.actions?.[model.animation]?.fadeOut(0.24);
-  // }, [model.animation, animationFromHook.actions]);
+  const material = useRef(new THREE.MeshToonMaterial({
+    color: new THREE.Color(0xffffff),
+    //map: loadTexture()
+  }));
 
-      useEffect(() =>
-    {
-        const action = animationFromHook.actions[animationName]
-        action
-            .reset()
-            .fadeIn(0.5)
-            .play()
+  //Set material to the player
+  useEffect(() => {
+    model.scene.traverse((child) => {
+      if (child.isMesh) {
+        //child.material = material.current;
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+  }, [model.scene]);
 
-        return () =>
-        {
-            action.fadeOut(0.5)
-        }
-    }, [ animationName ])
+  // Play animation based on parameter that the component got
+  useEffect(() => {
+    const action = modelAnimations.actions[animation];
+    if (!action) return;
+    action
+      .reset()
+      .fadeIn(0.5)
+      .play();
+
+    return () => {
+      action.fadeOut(0.5);
+    };
+  }, [animation, modelAnimations.actions])
 
   
   return (
     <group ref={group} {...props} dispose={null}>
-      <primitive scale={.8} object={model.scene} />
+      <primitive scale={0.18} object={model.scene} />
     </group>
   );
 }
 
-useGLTF.preload("/models/AdventurerAnimatedExport.glb");
+useGLTF.preload("/models/AdventurerAnimatedExport2.glb");

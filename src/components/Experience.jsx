@@ -26,13 +26,17 @@ const maps = {
     scale: 0.4,
     position: [-4, 0, -6],
   },
+  test_map_spiek:{
+    scale: 2,
+    position: [0,-2,0],
+  }
 };
 
 export const Experience = () => {
   const shadowCameraRef = useRef();
   const { map } = useControls("Map", {
     map: {
-      value: "castle_on_hills",
+      value: "test_map_spiek",
       options: Object.keys(maps),
     },
   });
