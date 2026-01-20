@@ -2,7 +2,7 @@ import { KeyboardControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Experience } from "./components/Experience";
 import { Perf } from "r3f-perf";
-import ProgressBar from "./components/ProgressBar";
+import ProgressBar from "./components/ProgressBar/ProgressBar";
 
 const keyboardMap = [
   { name: "forward", keys: ["ArrowUp", "KeyW"] },
