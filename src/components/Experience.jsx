@@ -107,7 +107,7 @@ export const Experience = () => {
           scale={0.6}
           position={[2, -1.63, -1]}
           rotation={[0, Math.PI / 0.8, 0]}
-          animation={"Wave"}
+          animation={"Idle"}
         />
       </Physics>
     </>
