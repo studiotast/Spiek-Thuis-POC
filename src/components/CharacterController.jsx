@@ -33,8 +33,8 @@ export const CharacterController = () => {
   const { WALK_SPEED, RUN_SPEED, ROTATION_SPEED } = useControls(
     "Character Control",
     {
-      WALK_SPEED: { value: 0.7, min: 0.1, max: 4, step: 0.1 },
-      RUN_SPEED: { value: 1.3, min: 0.2, max: 12, step: 0.1 },
+      WALK_SPEED: { value: 1.1, min: 0.1, max: 4, step: 0.1 },
+      RUN_SPEED: { value: 1.8, min: 0.2, max: 12, step: 0.1 },
       ROTATION_SPEED: {
         value: degToRad(3),
         min: degToRad(0.1),
@@ -218,7 +218,7 @@ export const CharacterController = () => {
     <RigidBody colliders={false} lockRotations ref={rb}>
       <group ref={container}>
         <group ref={cameraTarget} position-z={2} />
-        <group ref={cameraPosition} position-y={2} position-z={-3} />
+        <group ref={cameraPosition} position-y={1} position-z={-3} />
         <group ref={player}>
           <Character
             scale={0.65}

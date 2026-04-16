@@ -8,6 +8,7 @@ import { Owl } from "./Owl";
 import usePlayer from "../stores/usePlayer";
 import { useFrame } from "@react-three/fiber";
 import { Spiek } from "./Spiek";
+import { Windmill } from "./Windmill";
 
 const maps = {
   castle_on_hills: {
@@ -97,20 +98,19 @@ export const Experience = () => {
           position={maps[map].position}
           model={`models/${map}.glb`}
         />
-
         <CharacterController />
         <Owl
           position={owlPos}
           rotation={[0, Math.PI * 1.8, 0]}
           animation={"Idle"}
         />
-
         <Spiek
           scale={0.6}
           position={spiekPos}
           rotation={[0, Math.PI / 0.9, 0]}
           animation={"Idle"}
         />
+        <Windmill scale={5} position={[0, -1.5, 0]} />
       </Physics>
     </>
   );
