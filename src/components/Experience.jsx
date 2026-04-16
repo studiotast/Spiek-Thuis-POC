@@ -9,6 +9,7 @@ import usePlayer from "../stores/usePlayer";
 import { useFrame } from "@react-three/fiber";
 import { Spiek } from "./Spiek";
 import { Windmill } from "./Windmill";
+import { Pyramid } from "./Pyramid";
 
 const maps = {
   castle_on_hills: {
@@ -64,6 +65,24 @@ export const Experience = () => {
     },
   });
 
+  const { pyramidPos, baseRows, pyramidRotation } = useControls("Pyramid", {
+    pyramidPos: {
+      value: [6, -1.4, 4],
+      step: 0.1,
+    },
+
+    baseRows: {
+      value: 4,
+      min: 2,
+      max: 6,
+      step: 1,
+    },
+    pyramidRotation: {
+      value: [0, Math.PI / 2, 0],
+      step: 0.1,
+    },
+  });
+
   const character = useRef();
   const setPlayer = usePlayer((state) => state.setPlayer);
 
@@ -111,6 +130,11 @@ export const Experience = () => {
           animation={"Idle"}
         />
         <Windmill scale={5} position={[0, -1.5, 0]} />
+        <Pyramid
+          position={pyramidPos}
+          baseRows={baseRows}
+          rotation={pyramidRotation}
+        />
       </Physics>
     </>
   );
