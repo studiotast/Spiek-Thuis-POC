@@ -1,6 +1,6 @@
 import { Environment, OrthographicCamera } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
-import { Leva, useControls } from "leva";
+import { Leva, useControls, button } from "leva";
 import { useRef, useEffect } from "react";
 import { CharacterController } from "./CharacterController";
 import { Map } from "./Map";
@@ -81,6 +81,10 @@ export const Experience = () => {
       value: [0, Math.PI / 2, 0],
       step: 0.1,
     },
+    resetPyramid: button(() => {
+      const resetPyramid = usePlayer.getState().resetPyramid;
+      resetPyramid();
+    }),
   });
 
   const character = useRef();

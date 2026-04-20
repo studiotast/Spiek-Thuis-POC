@@ -1,16 +1,23 @@
 import { RigidBody } from "@react-three/rapier";
 import { useRef, useEffect } from "react";
+import { useGLTF } from "@react-three/drei";
+import usePlayer from "../stores/usePlayer";
 
-// Einzelnes Block-Objekt
+// Single block object
 const Block = ({ position, scale = 0.5 }) => {
-  const meshRef = useRef();
+  const { scene } = useGLTF("/models/cube.glb");
+  const groupRef = useRef();
 
   useEffect(() => {
-    if (meshRef.current) {
-      meshRef.current.castShadow = true;
-      meshRef.current.receiveShadow = true;
+    if (groupRef.current) {
+      groupRef.current.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
     }
-  }, []);
+  }, [scene]);
 
   return (
     <RigidBody
@@ -24,15 +31,16 @@ const Block = ({ position, scale = 0.5 }) => {
       friction={1}
       canSleep
     >
-      <mesh ref={meshRef} scale={[scale, scale, scale]}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="#ff6b6b" />
-      </mesh>
+      <group ref={groupRef} scale={scale * 0.5}>
+        <primitive object={scene.clone()} />
+      </group>
     </RigidBody>
   );
 };
 
-// Piramide aus Blöcken
+useGLTF.preload("/models/cube.glb");
+
+// Pyramid made of blocks
 export const Pyramid = ({
   position = [0, 0, 0],
   baseRows = 4,
@@ -40,10 +48,11 @@ export const Pyramid = ({
   gap = 0.1,
   rotation = [0, 0, 0],
 }) => {
+  const pyramidResetTrigger = usePlayer((state) => state.pyramidResetTrigger);
   const blocks = [];
   let blockIndex = 0;
 
-  // Erstelle Pyramide-Struktur
+  // Create pyramid structure
   for (let row = 0; row < baseRows; row++) {
     const blocksInRow = baseRows - row;
     const blockSpacing = blockSize + gap;
@@ -67,7 +76,11 @@ export const Pyramid = ({
   }
 
   return (
-    <group position={position} rotation={rotation}>
+    <group
+      key={`pyramid-${pyramidResetTrigger}`}
+      position={position}
+      rotation={rotation}
+    >
       {blocks}
     </group>
   );

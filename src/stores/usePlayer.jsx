@@ -31,5 +31,11 @@ export default create((set) => {
 
         return { xp: newXp };
       }),
+
+    pyramidResetTrigger: 0,
+    resetPyramid: () =>
+      set((state) => ({
+        pyramidResetTrigger: state.pyramidResetTrigger + 1,
+      })),
   };
 });
